@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: lawverse_qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: lawverse_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=lawverse
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lawverse_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/lawverse
+      - APP_ENV=production
+    depends_on:
+      - qdrant
+      - postgres
+    volumes:
+      - ./data/raw:/app/data/raw
+      - ./corpus:/app/corpus
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lawverse_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  qdrant_data:
+  postgres_data:

@@ -1,0 +1,53 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node dependencies & build
+node_modules
+dist
+dist-ssr
+*.local
+
+# Python environment & cache
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases & storage
+*.db
+*.sqlite
+*.sqlite3
+lawverse.db
+qdrant_storage/
+data/qdrant_storage/
+
+# Environment variables & secrets
+.env
+.env.local
+.env.production
+.env.staging
+
+# Sensitive or quarantined data
+data/quarantine/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
